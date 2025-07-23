@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -17,7 +18,7 @@ class ToDoServiceTest {
     private final ToDoService toDoService = new ToDoService(toDoRepository);
 
     @Test
-    void getAllToDo_shouldReturnNull_IfEmpty() throws Exception {
+    void getAllToDo_shouldReturnNull_IfEmpty() {
         // Given
         when(toDoRepository.findAll()).thenReturn(Collections.emptyList());
 
@@ -34,9 +35,9 @@ class ToDoServiceTest {
     }
 
     @Test
-    void addNewToDo_shouldAddToDo() throws Exception {
+    void addNewToDo_shouldAddToDo(){
 
-        ToDoDTO toDoDTO = new ToDoDTO("new task", STATUS.TODO);
+        ToDoDTO toDoDTO = new ToDoDTO("new task", STATUS.OPEN);
         String generatedId = "some-generated-id-123";
         ToDo expectedToDoAfterSave = new ToDo(generatedId, toDoDTO.description(), toDoDTO.status());
 
@@ -46,14 +47,54 @@ class ToDoServiceTest {
 
         assertNotNull(actualToDo);
         assertEquals(expectedToDoAfterSave.id(), actualToDo.id());
-        assertEquals(toDoDTO.description(), actualToDo.description());
-        assertEquals(toDoDTO.status(), actualToDo.status());
+        assertEquals(expectedToDoAfterSave.description(), actualToDo.description());
+        assertEquals(expectedToDoAfterSave.status(), actualToDo.status());
 
         verify(toDoRepository).save(any(ToDo.class));
 
     }
 
+    @Test
+    void findToDoById_shouldFindToDoById() {
+        //Give
+        ToDoDTO toDoDTO = new ToDoDTO("new task", STATUS.OPEN);
+        String generatedId = "some-generated-id-123";
+        ToDo expectedToDo = new ToDo(generatedId, toDoDTO.description(), toDoDTO.status());
+        //When
+        when(toDoRepository.findById(generatedId)).thenReturn(Optional.of(expectedToDo));
+
+        //ToDo actualToDo = toDoService.getToDoById(generatedId);
+
+        Optional<ToDo> actualToDoOptional = Optional.ofNullable(toDoService.getToDoById(generatedId));
+        ToDo actualToDo = actualToDoOptional.get();
+        //Then
+         assertTrue(actualToDoOptional.isPresent(), "ToDo should be found");
+         assertNotNull(actualToDo);
+         assertEquals(expectedToDo.id(), actualToDo.id());
+         assertEquals(expectedToDo.description(), actualToDo.description());
+         assertEquals(expectedToDo.status(), actualToDo.status());
+
+        verify(toDoRepository, times(1)).findById(generatedId);
+    }
 
 
+    @Test
+    void findToDoById_shouldReturnEmptyOptional_IfNotFound() {
+        // GIVEN
+        String nonExistentId = "non-existent-id";
+
+        when(toDoRepository.findById(nonExistentId)).thenReturn(Optional.empty());
+
+        // WHEN
+        Optional<ToDo> actualToDoOptional = Optional.ofNullable(toDoService.getToDoById(nonExistentId));
+
+        // THEN
+        assertFalse(actualToDoOptional.isPresent(), "ToDo should not be found");
+        //assertTrue(actualToDoOptional.isEmpty(), "Optional should be empty"); // Java 11+
+
+        // THEN (Verification of mock interactions)
+        verify(toDoRepository, times(1)).findById(nonExistentId);
+        verifyNoMoreInteractions(toDoRepository);
+    }
 
 }

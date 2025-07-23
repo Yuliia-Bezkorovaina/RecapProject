@@ -2,6 +2,7 @@ package org.example.recapproject.model;
 
 public enum STATUS {
     TODO ("ToDo"),
+    OPEN ("Open"),
     DOING ("Doing"),
     DONE ("Done");
 
