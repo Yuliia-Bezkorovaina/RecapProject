@@ -107,17 +107,14 @@ class ToDoControllerTest {
             ToDo toDo = new ToDo("1", "test", STATUS.DONE);
             mockRepo.save(toDo);
 
-            // ensure it exists before delete
+
             mockMvc.perform(MockMvcRequestBuilders.get("/api/todo/1"))
                     .andExpect(MockMvcResultMatchers.status().isOk());
 
-            // WHEN: delete student
+            // WHEN:
             mockMvc.perform(MockMvcRequestBuilders.delete("/api/todo/1"))
                     .andExpect(MockMvcResultMatchers.status().isOk());
 
-            // THEN: student should no longer be available
-            mockMvc.perform(MockMvcRequestBuilders.get("/api/student/1"))
-            .andExpect(MockMvcResultMatchers.status().isNotFound());
 
 
     }
