@@ -1,4 +1,7 @@
 package org.example.recapproject.model;
 
-public record ToDo(String id, String title, String description) {
+import lombok.With;
+
+@With
+public record ToDo(String id, String description, STATUS status) {
 }
