@@ -1,7 +1,6 @@
 package org.example.recapproject.service;
 
 import org.example.recapproject.DTO.ToDoDTO;
-import org.example.recapproject.model.STATUS;
 import org.example.recapproject.model.ToDo;
 import org.example.recapproject.repository.ToDoRepository;
 import org.springframework.stereotype.Service;
