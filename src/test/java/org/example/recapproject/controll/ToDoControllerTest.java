@@ -56,7 +56,7 @@ class ToDoControllerTest {
     @Test
     void getToDoById_shouldReturnToDo_ifDatavalide() throws Exception {
         //Give
-        ToDo todo = new ToDo("1", "testing", STATUS.DOING);
+        ToDo todo = new ToDo("1", "testing", STATUS.IN_PROGRESS);
         mockRepo.save(todo);
         todo = new ToDo("2", "party", STATUS.OPEN);
         mockRepo.save(todo);
@@ -80,7 +80,7 @@ class ToDoControllerTest {
         ToDo oldToDo = new ToDo("1", "old testing", STATUS.OPEN);
         mockRepo.save(oldToDo);
 
-        ToDo updateToDo = new ToDo("1", "new testing", STATUS.DOING);
+        ToDo updateToDo = new ToDo("1", "new testing", STATUS.IN_PROGRESS);
         mockRepo.delete(oldToDo);
         mockRepo.save(updateToDo);
 
@@ -91,13 +91,13 @@ class ToDoControllerTest {
                                                 {
                                                   "id" : "1",
                                           "description" : "new testing",
-                                        "status" : "DOING"}
+                                        "status" : "IN_PROGRESS"}
                                         """))
                 // THEN (Assert)
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("new testing")) // Assert description
-                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("DOING"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("IN_PROGRESS"));
     }
 
     @Test
