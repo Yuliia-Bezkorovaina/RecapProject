@@ -1,5 +1,7 @@
 package org.example.recapproject.service;
 
+import org.example.recapproject.DTO.ToDoDTO;
+import org.example.recapproject.model.STATUS;
 import org.example.recapproject.model.ToDo;
 import org.example.recapproject.repository.ToDoRepository;
 import org.junit.jupiter.api.Test;
@@ -20,15 +22,38 @@ class ToDoServiceTest {
         when(toDoRepository.findAll()).thenReturn(Collections.emptyList());
 
         // When
-        List<ToDo> actualToDos = toDoService.findAll(); // Assuming this is your service method
+        List<ToDo> actualToDos = toDoService.findAll();
 
         // Then
-        // Verify that the returned list is empty
-        assertNotNull(actualToDos); // It should return an empty list, not null
+
+        assertNotNull(actualToDos);
         assertTrue(actualToDos.isEmpty());
 
-        // Verify that findAll was called on the repository
+
         verify(toDoRepository, times(1)).findAll();
     }
+
+    @Test
+    void addNewToDo_shouldAddToDo() throws Exception {
+
+        ToDoDTO toDoDTO = new ToDoDTO("new task", STATUS.TODO);
+        String generatedId = "some-generated-id-123";
+        ToDo expectedToDoAfterSave = new ToDo(generatedId, toDoDTO.description(), toDoDTO.status());
+
+        when(toDoRepository.save(any(ToDo.class))).thenReturn(expectedToDoAfterSave);
+
+        ToDo actualToDo = toDoService.addToDo(toDoDTO);
+
+        assertNotNull(actualToDo);
+        assertEquals(expectedToDoAfterSave.id(), actualToDo.id());
+        assertEquals(toDoDTO.description(), actualToDo.description());
+        assertEquals(toDoDTO.status(), actualToDo.status());
+
+        verify(toDoRepository).save(any(ToDo.class));
+
+    }
+
+
+
 
 }

@@ -1,10 +1,9 @@
 package org.example.recapproject.controll;
 
+import org.example.recapproject.DTO.ToDoDTO;
 import org.example.recapproject.model.ToDo;
 import org.example.recapproject.service.ToDoService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,5 +19,10 @@ public class ToDoController {
     @GetMapping
     public List<ToDo> getAllToDo(){
         return toDoService.findAll();
+    }
+
+    @PostMapping
+    public ToDo addToDo(@RequestBody ToDoDTO toDoDTO) {
+        return toDoService.addToDo(toDoDTO);
     }
 }
