@@ -18,7 +18,7 @@ class ToDoServiceTest {
     private final ToDoService toDoService = new ToDoService(toDoRepository);
 
     @Test
-    void getAllToDo_shouldReturnNull_IfEmpty() throws Exception {
+    void getAllToDo_shouldReturnNull_IfEmpty() {
         // Given
         when(toDoRepository.findAll()).thenReturn(Collections.emptyList());
 
@@ -35,7 +35,7 @@ class ToDoServiceTest {
     }
 
     @Test
-    void addNewToDo_shouldAddToDo() throws Exception {
+    void addNewToDo_shouldAddToDo(){
 
         ToDoDTO toDoDTO = new ToDoDTO("new task", STATUS.OPEN);
         String generatedId = "some-generated-id-123";
@@ -55,7 +55,7 @@ class ToDoServiceTest {
     }
 
     @Test
-    void findToDoById_shouldFindToDoById() throws Exception {
+    void findToDoById_shouldFindToDoById() {
         //Give
         ToDoDTO toDoDTO = new ToDoDTO("new task", STATUS.OPEN);
         String generatedId = "some-generated-id-123";
