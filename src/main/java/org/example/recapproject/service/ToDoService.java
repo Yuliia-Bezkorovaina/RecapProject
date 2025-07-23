@@ -40,4 +40,12 @@ public List<ToDo> findAll() {
         }
         return editToDo;
     }
+
+    public void deleteToDoById(String id) {
+    ToDo toDelete = toDoRepository.findById(id).orElse(null);
+    if(toDelete != null) {
+        toDoRepository.delete(toDelete);
+    }
+      //return toDelete;
+    }
 }

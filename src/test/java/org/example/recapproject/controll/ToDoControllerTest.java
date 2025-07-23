@@ -98,10 +98,28 @@ class ToDoControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("new testing")) // Assert description
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("DOING"));
-
-
-        //Then
     }
 
+    @Test
+    void deleteToDoById_shouldReturnToDo_ifDataValide() throws Exception {
+
+            // GIVEN
+            ToDo toDo = new ToDo("1", "test", STATUS.DONE);
+            mockRepo.save(toDo);
+
+            // ensure it exists before delete
+            mockMvc.perform(MockMvcRequestBuilders.get("/api/todo/1"))
+                    .andExpect(MockMvcResultMatchers.status().isOk());
+
+            // WHEN: delete student
+            mockMvc.perform(MockMvcRequestBuilders.delete("/api/todo/1"))
+                    .andExpect(MockMvcResultMatchers.status().isOk());
+
+            // THEN: student should no longer be available
+            mockMvc.perform(MockMvcRequestBuilders.get("/api/student/1"))
+            .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+
+    }
 
 }

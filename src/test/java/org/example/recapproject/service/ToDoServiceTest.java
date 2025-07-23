@@ -104,9 +104,9 @@ class ToDoServiceTest {
         ToDo oldToDo = new ToDo(generatedId, toDoDTO.description(), toDoDTO.status());
         ToDo expectedToDo = new ToDo(generatedId, "new task", STATUS.DOING);
         //When
-        when(toDoRepository.findById(generatedId)).thenReturn(Optional.of(expectedToDo));
         doNothing().when(toDoRepository).delete(oldToDo);
-        when(toDoRepository.save(expectedToDo)).thenReturn(expectedToDo);
+        when(toDoRepository.findById(generatedId)).thenReturn(Optional.of(expectedToDo));
+        //when(toDoRepository.save(expectedToDo)).thenReturn(expectedToDo);
 
         Optional<ToDo> actualToDo = toDoRepository.findById(generatedId);
 
@@ -115,6 +115,26 @@ class ToDoServiceTest {
         assertEquals(expectedToDo.description(), actualToDo.get().description());
         assertEquals(expectedToDo.status(), actualToDo.get().status());
         verify(toDoRepository, times(1)).findById(generatedId);
+        verifyNoMoreInteractions(toDoRepository);
+    }
+
+    @Test
+    void deleteToDoById_shouldDeleteToDo() {
+
+        // GIVEN
+        String generatedId = "some-generated-id-123";
+        ToDo expectedToDo = new ToDo(generatedId, "task to delete", STATUS.OPEN);
+        when(toDoRepository.findById(generatedId)).thenReturn(Optional.of(expectedToDo));
+        doNothing().when(toDoRepository).delete(expectedToDo);
+
+        // WHEN
+        toDoService.deleteToDoById(generatedId);
+
+        // THEN
+        verify(toDoRepository, times(1)).findById(generatedId);
+        verify(toDoRepository, times(1)).delete(expectedToDo);
+        verify(toDoRepository, never()).deleteById(anyString());
+        verify(toDoRepository, never()).save(any(ToDo.class));
         verifyNoMoreInteractions(toDoRepository);
     }
 
