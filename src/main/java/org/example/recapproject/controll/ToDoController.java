@@ -25,4 +25,10 @@ public class ToDoController {
     public ToDo addToDo(@RequestBody ToDoDTO toDoDTO) {
         return toDoService.addToDo(toDoDTO);
     }
+
+    @GetMapping("/{id}")
+    public ToDo getToDoById(@PathVariable String id) {
+        return toDoService.getToDoById(id);
+    }
+
 }

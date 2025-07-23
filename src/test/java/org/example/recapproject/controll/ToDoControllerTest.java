@@ -1,6 +1,8 @@
 package org.example.recapproject.controll;
 
 
+import org.example.recapproject.model.STATUS;
+import org.example.recapproject.model.ToDo;
 import org.example.recapproject.repository.ToDoRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,12 +44,38 @@ class ToDoControllerTest {
 
                                 {
                       "description" : "new task",
-                      "status": "TODO"
+                      "status": "OPEN"
                   }
                  """))
                 .andExpect(MockMvcResultMatchers.status().isOk()) // oder isCreated(), wenn du das im Controller machst
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("new task"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("TODO"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("OPEN"));
     }
+
+    @Test
+    void getToDoById_shouldReturnToDo_ifDatavalide() throws Exception {
+        //Give
+        ToDo todo = new ToDo("1", "testing", STATUS.DOING);
+        mockRepo.save(todo);
+        todo = new ToDo("2", "party", STATUS.OPEN);
+        mockRepo.save(todo);
+        //When
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/todo/2"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(
+                        """
+                                        {
+                                "id" : "2",
+                                "description" : "party",
+                                "status" : "OPEN"
+                                }
+                                """
+                ));
+    }
+
+
+
+
+
 }

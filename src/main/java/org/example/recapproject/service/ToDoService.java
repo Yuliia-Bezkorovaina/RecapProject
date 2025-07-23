@@ -17,6 +17,7 @@ public ToDoService(ToDoRepository toDoRepository) {
 }
 
 public List<ToDo> findAll() {
+
     return toDoRepository.findAll();
 }
 
@@ -24,5 +25,9 @@ public List<ToDo> findAll() {
     String id = UUID.randomUUID().toString();
     ToDo newToDo = new ToDo(id, toDoDTO.description(), toDoDTO.status());
     return toDoRepository.save(newToDo);
+    }
+
+    public ToDo getToDoById(String toDoId) {
+    return toDoRepository.findById(toDoId).orElse(null);
     }
 }
