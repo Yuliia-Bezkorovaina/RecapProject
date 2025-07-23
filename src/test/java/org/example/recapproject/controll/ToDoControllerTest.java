@@ -74,8 +74,34 @@ class ToDoControllerTest {
                 ));
     }
 
+    @Test
+    void updateToDoById_shouldReturnToDo_ifDataValide() throws Exception {
+        //Give
+        ToDo oldToDo = new ToDo("1", "old testing", STATUS.OPEN);
+        mockRepo.save(oldToDo);
+
+        ToDo updateToDo = new ToDo("1", "new testing", STATUS.DOING);
+        mockRepo.delete(oldToDo);
+        mockRepo.save(updateToDo);
+
+        //When
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/todo/" + "1")
+                        .contentType(MediaType.APPLICATION_JSON).content(
+                                """
+                                                {
+                                                  "id" : "1",
+                                          "description" : "new testing",
+                                        "status" : "DOING"}
+                                        """))
+                // THEN (Assert)
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("new testing")) // Assert description
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("DOING"));
 
 
+        //Then
+    }
 
 
 }

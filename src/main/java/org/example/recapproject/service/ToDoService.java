@@ -27,7 +27,17 @@ public List<ToDo> findAll() {
     return toDoRepository.save(newToDo);
     }
 
-    public ToDo getToDoById(String toDoId) {
-    return toDoRepository.findById(toDoId).orElse(null);
+    public ToDo getToDoById(String id) {
+    return toDoRepository.findById(id).orElse(null);
+    }
+
+    public ToDo updateToDoById(String id,  ToDoDTO toDoDTO) {
+    ToDo editToDo = toDoRepository.findById(id).orElse(null);
+        if(editToDo != null) {
+            toDoRepository.save(editToDo
+                    .withDescription(toDoDTO.description())
+                    .withStatus(toDoDTO.status()));
+        }
+        return editToDo;
     }
 }

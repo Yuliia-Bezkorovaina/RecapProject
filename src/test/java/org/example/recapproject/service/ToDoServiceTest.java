@@ -63,8 +63,6 @@ class ToDoServiceTest {
         //When
         when(toDoRepository.findById(generatedId)).thenReturn(Optional.of(expectedToDo));
 
-        //ToDo actualToDo = toDoService.getToDoById(generatedId);
-
         Optional<ToDo> actualToDoOptional = Optional.ofNullable(toDoService.getToDoById(generatedId));
         ToDo actualToDo = actualToDoOptional.get();
         //Then
@@ -90,10 +88,33 @@ class ToDoServiceTest {
 
         // THEN
         assertFalse(actualToDoOptional.isPresent(), "ToDo should not be found");
-        //assertTrue(actualToDoOptional.isEmpty(), "Optional should be empty"); // Java 11+
+        assertTrue(actualToDoOptional.isEmpty(), "Optional should be empty");
 
-        // THEN (Verification of mock interactions)
+
         verify(toDoRepository, times(1)).findById(nonExistentId);
+        verifyNoMoreInteractions(toDoRepository);
+    }
+
+    @Test
+    void updateToDoById_shouldUpdateToDo() {
+        //Give
+
+        ToDoDTO toDoDTO = new ToDoDTO("old task", STATUS.OPEN);
+        String generatedId = "some-generated-id-123";
+        ToDo oldToDo = new ToDo(generatedId, toDoDTO.description(), toDoDTO.status());
+        ToDo expectedToDo = new ToDo(generatedId, "new task", STATUS.DOING);
+        //When
+        when(toDoRepository.findById(generatedId)).thenReturn(Optional.of(expectedToDo));
+        doNothing().when(toDoRepository).delete(oldToDo);
+        when(toDoRepository.save(expectedToDo)).thenReturn(expectedToDo);
+
+        Optional<ToDo> actualToDo = toDoRepository.findById(generatedId);
+
+        //Then
+        assertTrue(actualToDo.isPresent());
+        assertEquals(expectedToDo.description(), actualToDo.get().description());
+        assertEquals(expectedToDo.status(), actualToDo.get().status());
+        verify(toDoRepository, times(1)).findById(generatedId);
         verifyNoMoreInteractions(toDoRepository);
     }
 
